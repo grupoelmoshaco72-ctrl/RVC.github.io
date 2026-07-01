@@ -1,0 +1,18 @@
+# Sorteo RVC — Contenido de esta carpeta
+
+- **sorteo_rvc.html** → La página web del sorteo. Ábrela con doble clic para verla,
+  o súbela a un hosting (Netlify, Vercel, etc.) para publicarla en internet.
+
+- **GUIA_CONEXION.md** → Instrucciones paso a paso para conectar el guardado de
+  registros (Supabase) y el envío de correos (EmailJS). Ábrela con cualquier editor
+  de texto o visor de Markdown.
+
+Acceso al panel de administración (clic en "· Administración" al pie de la página):
+  Usuario:    admin
+  Contraseña: RvcSorteo2026   (cámbiala en el bloque CONFIGURACIÓN del .html)
+
+Cómo funciona el flujo de verificación:
+  1. Participante se registra → queda como "Pendiente"
+  2. Tú abres el panel y revisas el comprobante Yape
+  3. Haces clic en ✓ → se genera el código y se envía al correo del participante
+  4. Si el pago es falso → haces clic en ✕ → queda como "Rechazado"
