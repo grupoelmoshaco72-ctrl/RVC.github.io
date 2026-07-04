@@ -1,7 +1,15 @@
 # Sorteo RVC — Contenido de esta carpeta
 
-- **sorteo_rvc.html** → La página web del sorteo. Ábrela con doble clic para verla,
-  o súbela a un hosting (Netlify, Vercel, etc.) para publicarla en internet.
+- **index.html** → La página web del sorteo. Ábrela con doble clic para verla.
+  IMPORTANTE: al publicarla, sube también la carpeta **assets/** junto a este
+  archivo (contiene las fotos y videos de las motos) — si solo subes el .html
+  las motos no se van a ver. En Netlify Drop, Vercel o GitHub Pages arrastra
+  la carpeta Sorteo_RVC completa (o al menos index.html + assets/ juntos).
+
+- **assets/** → Fotos (moto-roja.png, moto-negra.png) y videos
+  (video-moto-roja.mp4, video-moto-negra.mp4) de las dos motos. Si el video
+  no corresponde al color correcto, solo intercambia los nombres de los dos
+  archivos .mp4 entre sí — no hace falta tocar el código.
 
 - **GUIA_CONEXION.md** → Instrucciones paso a paso para conectar el guardado de
   registros (Supabase), el envío de correos (EmailJS) y, opcionalmente, la
@@ -22,11 +30,25 @@ Acceso al panel de administración (clic en "· Administración" al pie de la p�
 Tickets: cada ticket cuesta S/10 y el participante elige cuántos comprar. Al
 aprobarlo, se genera un código RVC-XXXXXX por cada ticket comprado.
 
-Cómo funciona el flujo de verificación:
+Premio: una sola moto RVC — el ganador elige el color (rojo o negro) al
+reclamarla. El sorteo es el 15 de agosto a las 8:00 PM (cámbialo en
+RAFFLE_DATE, dentro del bloque CONFIGURACIÓN del .html, si hace falta).
+
+Validación: por decisión propia, la validación automática con IA (Parte C)
+está DESACTIVADA (AUTO_VALIDATE = false en el bloque CONFIGURACIÓN). Todos
+los comprobantes se revisan a mano. Si más adelante quieres reactivarla,
+solo cambia ese valor a "true" — el resto ya está configurado.
+
+Cómo funciona el flujo de verificación (modo manual, el actual):
   1. Participante se registra y elige su cantidad de tickets → queda como "Pendiente"
      (se bloquea si su DNI o correo ya estaban registrados)
-  2. Si activaste la Parte C (IA), el sistema intenta validar el pago solo, al instante.
-     Si no, o si la IA no está segura, sigue en "Pendiente" para revisión manual.
-  3. Tú abres el panel y revisas el comprobante Yape (con una nota 🤖 si la IA ya lo intentó)
-  4. Haces clic en ✓ → se generan los códigos y se envían al correo del participante
-  5. Si el pago es falso → haces clic en ✕ → queda como "Rechazado"
+  2. Tú abres el panel y revisas el comprobante Yape
+  3. Haces clic en ✓ → se generan los códigos y se envían al correo del participante
+  4. Si el pago es falso → haces clic en ✕ → queda como "Rechazado"
+
+Bases y condiciones: ya hay un texto completo (organizador, requisitos,
+mecánica del sorteo, protección de datos, etc.) en un cuadro emergente al
+que se accede desde "Bases" en el menú o el check de aceptación del
+formulario. Es una plantilla general — antes de publicar el sorteo,
+haz que un abogado la revise y confirme si necesitas algún permiso
+especial en Perú para este tipo de sorteo.

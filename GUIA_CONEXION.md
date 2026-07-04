@@ -15,7 +15,7 @@ En el **pie de página** de tu web verás el texto discreto `· Administración`
 
 ## ✅ Cómo funciona el flujo ahora
 
-**Sin la Parte C activada (revisión 100% manual):**
+**Sin la Parte C activada (revisión 100% manual — así está configurado ahora mismo):**
 1. **Participante se registra**, eligiendo cuántos tickets quiere (S/10 c/u) → queda en estado **Pendiente** (no recibe ningún correo todavía). Si su DNI o correo ya estaban registrados, la página se lo avisa y no lo deja duplicar el registro.
 2. **Tú abres el panel** → ves la foto del comprobante de Yape
 3. **Si el pago es válido** → haces clic en ✓ → se generan tantos códigos `RVC-XXXXXX` como tickets haya comprado, y se envían al correo del participante
@@ -193,7 +193,9 @@ Desde ahora, cuando aceptes a un participante en el panel de admin, le llegará 
 
 ---
 
-## Parte C — Validación automática del comprobante con IA (opcional)
+## Parte C — Validación automática del comprobante con IA (opcional, desactivada)
+
+**Esta parte está desactivada por defecto** (`AUTO_VALIDATE = false`) por decisión propia: se prefiere revisar cada comprobante a mano por seguridad. El código y estas instrucciones se dejan documentados por si más adelante quieres activarla — no necesitas nada de esta sección para operar el sorteo en modo manual.
 
 Esta parte hace que el sistema **lea el comprobante de Yape solo**, con una IA de visión (Claude), y si el monto, el destinatario y el número de operación calzan, aprueba al participante y le envía sus códigos al instante — sin que tú tengas que revisarlo a mano. Si algo no calza o la imagen no se puede leer con confianza, el registro queda "Pendiente" igual que antes, con una nota para que tú lo revises.
 
@@ -242,9 +244,19 @@ Esta parte hace que el sistema **lea el comprobante de Yape solo**, con una IA d
 
 ---
 
+## Bases y condiciones
+
+Al hacer clic en "Bases" (menú superior, pie de página o el check de aceptación del formulario) se abre un cuadro emergente con el texto completo: organizador, requisitos para participar, mecánica del sorteo, notificación al ganador, protección de datos, etc. Para editarlo, busca `id="basesModal"` dentro del `.html` — es HTML normal, no hace falta tocar nada del bloque CONFIGURACIÓN.
+
+**Es una plantilla general, no asesoría legal.** Antes de publicar el sorteo con dinero real de por medio, haz que un abogado la revise y confirme si tu sorteo necesita algún permiso o registro especial ante una autoridad peruana (depende del tipo y valor del premio), y ajusta la razón social / datos reales de tu empresa donde corresponda.
+
+---
+
 ## Publicar la página
 
-Sube el archivo `.html` a cualquier hosting gratuito: **Netlify Drop** (https://app.netlify.com/drop — arrastras el archivo y listo), **Vercel** o **GitHub Pages**. Tu sorteo queda en línea con su propio enlace. Si consigues un dominio propio (ej. `sorteorvc.com`), estos tres hostings te dejan conectarlo gratis desde su panel — se ve más profesional que un subdominio genérico.
+**Importante:** el sitio ahora usa fotos y videos reales de las motos que viven en la carpeta `assets/`, junto a `index.html`. Sube **toda la carpeta Sorteo_RVC** (o como mínimo `index.html` + `assets/` juntos, manteniendo esa misma estructura) — si subes solo el `.html` suelto, las motos no se van a ver.
+
+Opciones de hosting gratuito: **Netlify Drop** (https://app.netlify.com/drop — arrastras la carpeta completa y listo), **Vercel** o **GitHub Pages**. Tu sorteo queda en línea con su propio enlace. Si consigues un dominio propio (ej. `sorteorvc.com`), estos tres hostings te dejan conectarlo gratis desde su panel — se ve más profesional que un subdominio genérico.
 
 ---
 
@@ -253,7 +265,7 @@ Sube el archivo `.html` a cualquier hosting gratuito: **Netlify Drop** (https://
 ```js
 const ADMIN_USER = "admin";          // usuario del panel (solo se usa si NO configuras Supabase)
 const ADMIN_PASS = "RvcSorteo2026";  // contraseña del panel (solo se usa si NO configuras Supabase) — cámbiala
-const RAFFLE_DATE = {month:6, day:28, hour:20}; // fecha del sorteo (mes 6 = julio)
+const RAFFLE_DATE = {month:7, day:15, hour:20}; // fecha del sorteo (mes 7 = agosto; enero es 0)
 const YAPE_NUMERO = "953 127 153";        // número Yape que se muestra a los participantes
 const YAPE_TITULAR = "Ricardo Cajachagua"; // nombre del titular que se muestra a los participantes
 const AUTO_VALIDATE = true;               // true = validación automática con IA (Parte C) · false = siempre manual
