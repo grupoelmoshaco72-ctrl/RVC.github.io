@@ -4,15 +4,29 @@
   o súbela a un hosting (Netlify, Vercel, etc.) para publicarla en internet.
 
 - **GUIA_CONEXION.md** → Instrucciones paso a paso para conectar el guardado de
-  registros (Supabase) y el envío de correos (EmailJS). Ábrela con cualquier editor
-  de texto o visor de Markdown.
+  registros (Supabase), el envío de correos (EmailJS) y, opcionalmente, la
+  validación automática del comprobante con IA (Parte C). Ábrela con cualquier
+  editor de texto o visor de Markdown.
+
+- **supabase/functions/validar-comprobante/index.ts** → Código de la validación
+  automática con IA (Parte C de la guía). Solo se usa si activas esa parte.
 
 Acceso al panel de administración (clic en "· Administración" al pie de la página):
-  Usuario:    admin
-  Contraseña: RvcSorteo2026   (cámbiala en el bloque CONFIGURACIÓN del .html)
+  Modo demo (sin Supabase configurado):
+    Usuario:    admin
+    Contraseña: RvcSorteo2026   (cámbiala en el bloque CONFIGURACIÓN del .html)
+  Con Supabase configurado (recomendado, ver GUIA_CONEXION.md):
+    El login pide el correo/contraseña reales que crees en Supabase Authentication.
+    Ya no depende de ninguna contraseña escrita en el archivo .html.
+
+Tickets: cada ticket cuesta S/10 y el participante elige cuántos comprar. Al
+aprobarlo, se genera un código RVC-XXXXXX por cada ticket comprado.
 
 Cómo funciona el flujo de verificación:
-  1. Participante se registra → queda como "Pendiente"
-  2. Tú abres el panel y revisas el comprobante Yape
-  3. Haces clic en ✓ → se genera el código y se envía al correo del participante
-  4. Si el pago es falso → haces clic en ✕ → queda como "Rechazado"
+  1. Participante se registra y elige su cantidad de tickets → queda como "Pendiente"
+     (se bloquea si su DNI o correo ya estaban registrados)
+  2. Si activaste la Parte C (IA), el sistema intenta validar el pago solo, al instante.
+     Si no, o si la IA no está segura, sigue en "Pendiente" para revisión manual.
+  3. Tú abres el panel y revisas el comprobante Yape (con una nota 🤖 si la IA ya lo intentó)
+  4. Haces clic en ✓ → se generan los códigos y se envían al correo del participante
+  5. Si el pago es falso → haces clic en ✕ → queda como "Rechazado"
