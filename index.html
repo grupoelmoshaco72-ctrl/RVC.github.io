@@ -712,8 +712,8 @@ const YAPE_TITULAR = "Ricardo Cajachagua"; // ← nombre del titular de esa cuen
 
 /* ---- 1) GUARDAR LOS REGISTROS DE VERDAD (Supabase). Vacío = modo demo ---- */
 const SUPA = {
-  url: "",   // ← pega tu Project URL (ej: https://xxxx.supabase.co)
-  key: ""    // ← pega tu clave "anon / publishable"
+  url: "https://cbducgrhjyrlcodlxzuh.supabase.co",   // ← tu Project URL
+  key: "sb_publishable_pSRUsFCO012JT2hGF9YWEw_tz3p30-D"    // ← tu clave "anon / publishable"
 };
 /* ---- 2) ENVIAR EL CÓDIGO POR CORREO (EmailJS). Vacío = se muestra en pantalla ---- */
 const EMAILJS = { serviceId:"", templateId:"", publicKey:"" };
@@ -734,12 +734,17 @@ if(EMAILJS.publicKey && window.emailjs){ try{ emailjs.init({publicKey:EMAILJS.pu
 const MODE = sb ? "supabase" : "local";
 
 /* ---------- Almacenamiento local (demo: persiste en Claude.ai, memoria fuera) ---------- */
+/* Modo demo (sin Supabase): guarda en el localStorage del propio navegador.
+   OJO: esto NO se comparte entre dispositivos — un registro hecho en el
+   celular de un participante no lo verá el admin en su computadora. Para
+   que el panel de admin vea inscripciones de cualquier persona/dispositivo,
+   hay que configurar Supabase (GUIA_CONEXION.md, Parte A). */
 const LOCAL = {
   ok:(typeof window!=="undefined" && window.storage), mem:{},
-  async set(k,v){ if(this.ok){ try{ await window.storage.set(k,v,true); return; }catch(e){} } this.mem[k]=v; },
-  async get(k){ if(this.ok){ try{ const r=await window.storage.get(k,true); return r?r.value:null; }catch(e){ return null; } } return (k in this.mem)?this.mem[k]:null; },
-  async del(k){ if(this.ok){ try{ await window.storage.delete(k,true); return; }catch(e){} } delete this.mem[k]; },
-  async list(p){ if(this.ok){ try{ const r=await window.storage.list(p,true); return r?r.keys:[]; }catch(e){ return []; } } return Object.keys(this.mem).filter(k=>k.startsWith(p)); }
+  async set(k,v){ if(this.ok){ try{ await window.storage.set(k,v,true); return; }catch(e){} } try{ localStorage.setItem(k,v); }catch(e){ this.mem[k]=v; } },
+  async get(k){ if(this.ok){ try{ const r=await window.storage.get(k,true); return r?r.value:null; }catch(e){ return null; } } try{ const v=localStorage.getItem(k); return v!==null?v:((k in this.mem)?this.mem[k]:null); }catch(e){ return (k in this.mem)?this.mem[k]:null; } },
+  async del(k){ if(this.ok){ try{ await window.storage.delete(k,true); return; }catch(e){} } try{ localStorage.removeItem(k); }catch(e){} delete this.mem[k]; },
+  async list(p){ if(this.ok){ try{ const r=await window.storage.list(p,true); return r?r.keys:[]; }catch(e){ return []; } } try{ return Object.keys(localStorage).filter(k=>k.startsWith(p)); }catch(e){ return Object.keys(this.mem).filter(k=>k.startsWith(p)); } }
 };
 
 /* ---------- Capa de datos unificada (usa Supabase si está configurado) ---------- */
