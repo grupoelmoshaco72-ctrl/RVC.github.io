@@ -716,7 +716,7 @@ const SUPA = {
   key: "sb_publishable_pSRUsFCO012JT2hGF9YWEw_tz3p30-D"    // ← tu clave "anon / publishable"
 };
 /* ---- 2) ENVIAR EL CÓDIGO POR CORREO (EmailJS). Vacío = se muestra en pantalla ---- */
-const EMAILJS = { serviceId:"service_3hu4cis", templateId:"96kljdf", publicKey:"wEmy-ekz1wOPPcF4i" };
+const EMAILJS = { serviceId:"service_3hu4cis", templateId:"template_zrf35rt", publicKey:"wEmy-ekz1wOPPcF4i" };
 /* ---- 3) VALIDACIÓN AUTOMÁTICA DEL COMPROBANTE DE YAPE (IA, opcional) ----
    Requiere desplegar la Supabase Edge Function "validar-comprobante"
    (ver GUIA_CONEXION.md, Parte C). Si SUPA no está configurado o la función
@@ -962,16 +962,31 @@ async function submitForm(){
   $("#success").scrollIntoView({behavior:"smooth",block:"center"});
 }
 
+/* Si la librería de EmailJS no cargó (caché vieja, bloqueador), intenta cargarla de nuevo */
+async function ensureEmailJS(){
+  if(window.emailjs) return true;
+  try{
+    await new Promise((res,rej)=>{ const s=document.createElement("script");
+      s.src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+      s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+    if(window.emailjs){ emailjs.init({publicKey:EMAILJS.publicKey}); return true; }
+  }catch(e){ console.warn("EmailJS load:",e); }
+  return !!window.emailjs;
+}
+/* Devuelve {ok:true} o {ok:false, error:"motivo"} para mostrar el error real en el panel */
 async function sendEmail(meta, codes){
-  if(!EMAILJS.serviceId||!EMAILJS.templateId||!EMAILJS.publicKey||!window.emailjs) return false;
+  if(!EMAILJS.serviceId||!EMAILJS.templateId||!EMAILJS.publicKey)
+    return {ok:false, error:"faltan las llaves de EmailJS en el archivo"};
+  if(!(await ensureEmailJS()))
+    return {ok:false, error:"la librería de EmailJS no cargó en este navegador (recarga con Ctrl+Shift+R o desactiva el bloqueador)"};
   const cantidad = meta.cantidad||1;
   try{
     await emailjs.send(EMAILJS.serviceId, EMAILJS.templateId,
       { to_email:meta.email, to_name:meta.nombre, code:meta.code, codes:(codes||[meta.code]).join(", "),
         cantidad, total:cantidad*10,
         email:meta.email, name:meta.nombre, ciudad:meta.ciudad, tel:meta.tel });
-    return true;
-  }catch(e){ console.warn("email:",e); return false; }
+    return {ok:true};
+  }catch(e){ console.warn("email:",e); return {ok:false, error:(e&&(e.text||e.message))||String(e)}; }
 }
 function genCodes(n){
   const set=new Set();
@@ -1067,8 +1082,8 @@ async function setEstado(id,estado){
     await DB.setCode(id, code);
     // Enviar correo con ticket(s)
     const sent = await sendEmail(r, codes);
-    if(sent){ showAdminToast("✓ Verificado · Correo con "+codes.length+" código(s) enviado a "+r.email); }
-    else{ showAdminToast("✓ Verificado · Código(s) "+code+" asignado(s) (configura EmailJS para enviar correo)"); }
+    if(sent.ok){ showAdminToast("✓ Verificado · Correo con "+codes.length+" código(s) enviado a "+r.email); }
+    else{ showAdminToast("✓ Verificado · Código(s) "+code+" asignado(s) · ⚠ El correo NO se envió: "+sent.error); }
   } else if(estado==="verificado"){
     showAdminToast("✓ Ya tenía código: "+r.code);
   } else if(estado==="rechazado"){
